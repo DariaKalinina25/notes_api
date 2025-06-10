@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'blueprinter', '~> 1.1', '>= 1.1.2'
 gem 'bootsnap', require: false
 gem 'kamal', require: false
 gem 'pg', '~> 1.1'
@@ -12,7 +13,6 @@ gem 'solid_cache'
 gem 'solid_queue'
 gem 'thruster', require: false
 gem 'tzinfo-data', platforms: %i[windows jruby]
-gem 'blueprinter', '~> 1.1', '>= 1.1.2'
 
 group :development, :test do
   gem 'brakeman', require: false
