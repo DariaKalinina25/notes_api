@@ -6,7 +6,7 @@ module Api
       before_action :set_note, only: %i[show update destroy]
 
       def index
-        notes = filter_notes(Note.all)
+        notes = NotesFilter.new(Note.all, params).call
         render json: NoteBlueprint.render(notes), status: :ok
       end
 
@@ -45,13 +45,6 @@ module Api
 
       def note_params
         params.expect(note: %i[title body archived])
-      end
-
-      def filter_notes(notes)
-        return notes unless params.key?(:archived)
-
-        value = ActiveModel::Type::Boolean.new.cast(params[:archived])
-        notes.where(archived: value)
       end
     end
   end
