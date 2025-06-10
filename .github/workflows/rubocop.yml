@@ -1,4 +1,4 @@
-name: CI
+name: RuboCop
 
 on:
   pull_request:
@@ -6,7 +6,8 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  rubocop:
+    name: Run RuboCop
     runs-on: ubuntu-latest
 
     steps:
@@ -19,5 +20,8 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run RuboCop
+        run: bundle exec bin/rubocop -f github
