@@ -17,10 +17,17 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 group :development, :test do
   gem 'brakeman', require: false
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
-  gem 'rspec-rails', '~> 8.0'
+
+  # Code quality
   gem 'rubocop', require: false
+  gem 'rubocop-factory_bot', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
+
+  # Testing
+  gem 'factory_bot_rails', '~> 6.4', '>= 6.4.4'
+  gem 'rspec-rails', '~> 8.0'
+  gem 'shoulda-matchers', '~> 6.5'
 end
