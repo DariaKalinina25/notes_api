@@ -2,8 +2,12 @@
 
 FactoryBot.define do
   factory :note do
-    title { "Title" }
-    body { "Body" }
+    title { 'Title' }
+    body { 'Body' }
     archived { false }
+
+    trait :archived do
+      archived { true }
+    end
   end
 end
