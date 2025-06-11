@@ -166,4 +166,48 @@ RSpec.describe 'Api::V1::Notes' do
       end
     end
   end
+
+  describe 'PATCH /api/v1/notes/:id' do
+    let(:note) { create(:note) }
+
+    context 'with valid params' do
+      let(:valid_params) { { note: { title: 'Updated' } } }
+
+      before { patch "/api/v1/notes/#{note.id}", params: valid_params }
+
+      it_behaves_like 'returns status 200'
+
+      it 'updates the note title' do
+        expect(note.reload.title).to eq('Updated')
+      end
+    end
+
+    context 'with invalid params' do
+      let(:invalid_params) { { note: { title: '' } } }
+
+      before { patch "/api/v1/notes/#{note.id}", params: invalid_params }
+
+      it 'returns unprocessable entity status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns error message' do
+        expect(response.parsed_body['errors']).to include("Title can't be blank")
+      end
+    end
+
+    context 'when note does not exist' do
+      let(:valid_params) { { note: { title: 'Updated' } } }
+
+      before { patch '/api/v1/notes/999999', params: valid_params}
+
+      it 'returns 404 not found' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns error message' do
+        expect(response.parsed_body['error']).to eq('Note not found')
+      end
+    end
+  end
 end
