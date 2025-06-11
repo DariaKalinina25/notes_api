@@ -171,7 +171,7 @@ RSpec.describe 'Api::V1::Notes' do
 
       before { post '/api/v1/notes', params: invalid_params, as: :json }
 
-      it_behaves_like  'returns 422 unprocessable entity with error message'
+      it_behaves_like 'returns 422 unprocessable entity with error message'
     end
   end
 
@@ -195,13 +195,35 @@ RSpec.describe 'Api::V1::Notes' do
 
       before { patch "/api/v1/notes/#{note.id}", params: invalid_params, as: :json }
 
-      it_behaves_like  'returns 422 unprocessable entity with error message'
+      it_behaves_like 'returns 422 unprocessable entity with error message'
     end
 
     context 'when note does not exist' do
       let(:valid_params) { { note: { title: 'Updated' } } }
 
       before { patch '/api/v1/notes/999999', params: valid_params, as: :json }
+
+      it_behaves_like 'returns 404 not found with error message'
+    end
+  end
+
+  describe 'DELETE /api/v1/notes/:id' do
+    context 'when note exists' do
+      let(:note) { create(:note) }
+
+      before { delete "/api/v1/notes/#{note.id}" }
+
+      it 'returns 204 no content' do
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it 'returns an empty body' do
+        expect(response.parsed_body).to be_blank
+      end
+    end
+
+    context 'when note does not exist' do
+      before { delete '/api/v1/notes/999999' }
 
       it_behaves_like 'returns 404 not found with error message'
     end
