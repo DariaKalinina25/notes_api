@@ -9,6 +9,26 @@ RSpec.describe 'Api::V1::Notes' do
     end
   end
 
+  shared_examples 'returns 404 not found with error message' do
+    it 'returns 404 not found' do
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'returns error message' do
+      expect(response.parsed_body['error']).to eq('Note not found')
+    end
+  end
+
+  shared_examples 'returns 422 unprocessable entity with error message' do
+    it 'returns unprocessable entity status' do
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'returns error message' do
+      expect(response.parsed_body['errors']).to include("Title can't be blank")
+    end
+  end
+
   describe 'GET /api/v1/notes' do
     before { create_list(:note, 3) }
 
@@ -125,13 +145,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'when note does not exist' do
       before { get '/api/v1/notes/999999' }
 
-      it 'returns 404 not found' do
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it 'returns error message' do
-        expect(response.parsed_body['error']).to eq('Note not found')
-      end
+      it_behaves_like 'returns 404 not found with error message'
     end
   end
 
@@ -157,13 +171,7 @@ RSpec.describe 'Api::V1::Notes' do
 
       before { post '/api/v1/notes', params: invalid_params, as: :json }
 
-      it 'returns unprocessable entity status' do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it 'returns error message' do
-        expect(response.parsed_body['errors']).to include("Title can't be blank")
-      end
+      it_behaves_like  'returns 422 unprocessable entity with error message'
     end
   end
 
@@ -187,13 +195,7 @@ RSpec.describe 'Api::V1::Notes' do
 
       before { patch "/api/v1/notes/#{note.id}", params: invalid_params, as: :json }
 
-      it 'returns unprocessable entity status' do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it 'returns error message' do
-        expect(response.parsed_body['errors']).to include("Title can't be blank")
-      end
+      it_behaves_like  'returns 422 unprocessable entity with error message'
     end
 
     context 'when note does not exist' do
@@ -201,13 +203,7 @@ RSpec.describe 'Api::V1::Notes' do
 
       before { patch '/api/v1/notes/999999', params: valid_params, as: :json }
 
-      it 'returns 404 not found' do
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it 'returns error message' do
-        expect(response.parsed_body['error']).to eq('Note not found')
-      end
+      it_behaves_like 'returns 404 not found with error message'
     end
   end
 end
