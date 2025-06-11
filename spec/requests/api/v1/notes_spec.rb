@@ -134,4 +134,36 @@ RSpec.describe 'Api::V1::Notes' do
       end
     end
   end
+
+  describe 'POST /api/v1/notes' do
+    context 'with valid params' do
+      let(:valid_params) { { note: { title: 'Test', body: 'Content' } } }
+
+      before { post '/api/v1/notes', params: valid_params }
+
+      it 'returns created status' do
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'returns created note data' do
+        expect(response.parsed_body).to include('title' => 'Test',
+                                                'body' => 'Content',
+                                                'archived' => false)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:invalid_params) { { note: { title: '', body: '' } } }
+
+      before { post '/api/v1/notes', params: invalid_params }
+
+      it 'returns unprocessable entity status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns error message' do
+        expect(response.parsed_body['errors']).to include("Title can't be blank")
+      end
+    end
+  end
 end
