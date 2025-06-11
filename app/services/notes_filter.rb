@@ -9,7 +9,6 @@ class NotesFilter
   def call
     filter_by_archived
     filter_by_title
-    filter_by_edited
     @relation
   end
 
@@ -26,13 +25,5 @@ class NotesFilter
     return if @params[:title].blank?
 
     @relation = @relation.where('title ILIKE ?', "%#{@params[:title]}%")
-  end
-
-  def filter_by_edited
-    return unless @params.key?(:edited)
-
-    value = ActiveModel::Type::Boolean.new.cast(@params[:edited])
-    condition = value ? 'updated_at != created_at' : 'updated_at = created_at'
-    @relation = @relation.where(condition)
   end
 end
