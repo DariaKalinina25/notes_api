@@ -108,4 +108,30 @@ RSpec.describe 'Api::V1::Notes' do
       end
     end
   end
+
+  describe 'GET /api/v1/notes/:id' do
+    let(:note) { create(:note) }
+
+    context 'when note exists' do
+      before { get "/api/v1/notes/#{note.id}" }
+
+      it_behaves_like 'returns status 200'
+
+      it 'returns the note' do
+        expect(response.parsed_body['id']).to eq(note.id)
+      end
+    end
+
+    context 'when note does not exist' do
+      before { get '/api/v1/notes/999999' }
+
+      it 'returns 404 not found' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns error message' do
+        expect(response.parsed_body['error']).to eq('Note not found')
+      end
+    end
+  end
 end
