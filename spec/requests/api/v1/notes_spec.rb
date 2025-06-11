@@ -139,7 +139,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'with valid params' do
       let(:valid_params) { { note: { title: 'Test', body: 'Content' } } }
 
-      before { post '/api/v1/notes', params: valid_params }
+      before { post '/api/v1/notes', params: valid_params, as: :json }
 
       it 'returns created status' do
         expect(response).to have_http_status(:created)
@@ -155,7 +155,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'with invalid params' do
       let(:invalid_params) { { note: { title: '', body: '' } } }
 
-      before { post '/api/v1/notes', params: invalid_params }
+      before { post '/api/v1/notes', params: invalid_params, as: :json }
 
       it 'returns unprocessable entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -173,7 +173,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'with valid params' do
       let(:valid_params) { { note: { title: 'Updated' } } }
 
-      before { patch "/api/v1/notes/#{note.id}", params: valid_params }
+      before { patch "/api/v1/notes/#{note.id}", params: valid_params, as: :json }
 
       it_behaves_like 'returns status 200'
 
@@ -185,7 +185,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'with invalid params' do
       let(:invalid_params) { { note: { title: '' } } }
 
-      before { patch "/api/v1/notes/#{note.id}", params: invalid_params }
+      before { patch "/api/v1/notes/#{note.id}", params: invalid_params, as: :json }
 
       it 'returns unprocessable entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -199,7 +199,7 @@ RSpec.describe 'Api::V1::Notes' do
     context 'when note does not exist' do
       let(:valid_params) { { note: { title: 'Updated' } } }
 
-      before { patch '/api/v1/notes/999999', params: valid_params}
+      before { patch '/api/v1/notes/999999', params: valid_params, as: :json }
 
       it 'returns 404 not found' do
         expect(response).to have_http_status(:not_found)
